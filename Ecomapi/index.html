@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product API Test</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Product API Test</h1>
+    <section id="create-product">
+        <h2>Create Product</h2>
+        <form id="create-form" class="form" >
+            <label for="title">title:</label>
+            <input type="text" id="title" name="title">
+
+            <label for="description">description:</label>
+            <input type="text" id="description" name="description">
+
+            <label for="price">price:</label>
+            <input type="number" id="price" name="price">
+
+            <button type="submit">Create product</button>
+            
+        </form>
+        <div id="create-response"></div>
+    </section>
+
+    <section id="list-products">
+        <h2>Products</h2>
+        <table id="product-table">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>title</th>
+                    <th>description</th>
+                    <th>price</th>
+                </tr>
+            </thead>
+            <tbody id="product-list">
+                <!-- products will be listed here -->
+            </tbody>
+        </table>
+        <div id="list-response"></div>
+    </section>
+<!-- 
+    <section id="update-product">
+        <h2>Update Product</h2>
+        <form id="update-form">
+            <label for="update-id">ID:</label> 
+            <input type="number" id="update-id" name="id">
+
+            <label for="update-title">Title:</label>
+            <input type="text" id="update-title" name="title">
+
+            <label for="Description">Description:</label>
+            <input type="text" id="Description" name="description">
+
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price">
+
+            <input type="submit" value="Update Product">
+        </form>
+        <div id="update-response"></div>
+    </section>
+
+    <section id="delete-product">
+        <h2>Delete Product</h2>
+        <form id="delete-form">
+            <label for="delete-id">ID:</label>
+            <input type="number" id="delete-id" name="id"><br><br>
+            <input type="submit" value="Delete Product">
+        </form>
+        <div id="delete-response"></div>
+    </section>
+-->
+    <!-- <script src="script.js"></script> -->
+    <!--<script src="form-submit.js"></script> -->
+    <!-- <script src="list-products.js"></script> -->
+    
+    <script>    
+
+    const formE1=document.querySelector('.form');
+    formE1.addEventListener('submit',event =>{
+        event.preventDefault();
+
+        const formData= new FormData(formE1);
+        const data=Object.fromEntries(formData);
+        console.log(data)
+        fetch('http://localhost:5000/api/v1/products/create',{
+            method:'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+             body: JSON.stringify(data) 
+            
+        })
+        
+    } );
+
+    </script>
+    <script>
+
+        const formE2=document.getElementById('update-form');
+        formE2.addEventListener('submit',event =>{
+            event.preventDefault();
+    
+            const formData= new FormData(formE1);
+            const data=Object.fromEntries(formData);
+            console.log(data)
+            fetch('http://localhost:5000/api/v1/products/create',{
+                method:'POST',
+                headers:{
+                    'Content-Type': 'application/json'
+                },
+                 body: JSON.stringify(data) 
+                
+            })
+            
+        } );
+    
+        </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+           
+            fetchProducts();
+        });
+        
+        function fetchProducts() {
+           
+            fetch('http://localhost:5000/api/v1/products/') 
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch products');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    
+                    const products = data.products[0];  
+                    displayProducts(products);
+                })
+                .catch(error => {
+                    document.getElementById('list-response').innerText = `An error occurred: ${error.message}`;
+                });
+        }
+        
+        function displayProducts(products) {
+            const productTable = document.getElementById('product-list');
+            productTable.innerHTML = ''; 
+        
+           
+            products.forEach(product => {
+                const row = document.createElement('tr');
+        
+                const idCell = document.createElement('td');
+                idCell.textContent = product.id;
+        
+                const titleCell = document.createElement('td');
+                titleCell.textContent = product.title;
+        
+                const descriptionCell = document.createElement('td');
+                descriptionCell.textContent = product.description;
+        
+                const priceCell = document.createElement('td');
+                priceCell.textContent = product.price;
+        
+                
+                row.appendChild(idCell);
+                row.appendChild(titleCell);
+                row.appendChild(descriptionCell);
+                row.appendChild(priceCell);
+        
+               
+                productTable.appendChild(row);
+            });
+        }
+        
+    </script>
+</body>
+</html>
